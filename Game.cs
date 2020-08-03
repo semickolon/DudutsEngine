@@ -1,12 +1,19 @@
 using System;
+using System.Diagnostics;
 using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
 
 namespace DudutsEngine {
     public class Game {
+        private static Stopwatch stopwatch = new Stopwatch();
+        public static float GlobalTime {
+            get => stopwatch.ElapsedMilliseconds / 1000.0f;
+        }
+
         GameWindow window;
         Shader shader;
+        Material material;
         Mesh mesh;
 
         public Game() {
@@ -20,6 +27,8 @@ namespace DudutsEngine {
             window.UpdateFrame += UpdateFrame;
             window.RenderFrame += RenderFrame;
             window.Unload += Unload;
+
+            stopwatch.Start();
             window.Run(60.0);
         }
 
@@ -27,6 +36,9 @@ namespace DudutsEngine {
             GL.ClearColor(0, 0, 0, 0);
 
             shader = new Shader("shader.vert", "shader.frag");
+
+            Texture[] textures = { new Texture("texture.png") };
+            material = new Material(shader, textures);
 
             mesh = new Mesh(new float[] {
                 0.5f,  0.5f, 0.0f,  // top right
@@ -36,7 +48,12 @@ namespace DudutsEngine {
             }, new uint[] {
                 0, 1, 3,
                 1, 2, 3
-            }, shader);
+            }, new float[] {
+                1, 0,
+                1, 1,
+                0, 1,
+                0, 0
+            }, material);
         }
 
         void Resize(object o, EventArgs e) {

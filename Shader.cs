@@ -19,6 +19,7 @@ namespace DudutsEngine {
             GL.AttachShader(handle, vertexShader);
             GL.AttachShader(handle, fragmentShader);
             GL.LinkProgram(handle);
+            GL.ValidateProgram(handle);
 
             CleanUpShader(vertexShader);
             CleanUpShader(fragmentShader);
@@ -39,6 +40,7 @@ namespace DudutsEngine {
             
             string infoLog = GL.GetShaderInfoLog(shader);
             if (infoLog != "") {
+                Console.WriteLine("Shader compilation error detected! SHOOT THIS DEAD!");
                 Console.WriteLine(infoLog);
             }
 
@@ -52,6 +54,17 @@ namespace DudutsEngine {
 
         public void Use() {
             GL.UseProgram(handle);
+            SetFloat("TIME", Game.GlobalTime);
+        }
+
+        public void SetInt(string name, int value) {
+            int location = GL.GetUniformLocation(handle, name);
+            GL.Uniform1(location, value);
+        }
+
+        public void SetFloat(string name, float value) {
+            int location = GL.GetUniformLocation(handle, name);
+            GL.Uniform1(location, value);
         }
 
         public void Dispose() {
