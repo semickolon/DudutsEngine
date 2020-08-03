@@ -1,10 +1,13 @@
 using System;
 using OpenTK;
+using OpenTK.Input;
 using OpenTK.Graphics.OpenGL;
 
 namespace DudutsEngine {
     public class Game {
         GameWindow window;
+        Shader shader;
+        Mesh mesh;
 
         public Game() {
             window = new GameWindow(1024, 600);
@@ -12,34 +15,51 @@ namespace DudutsEngine {
         }
 
         public void Start() {
-            window.Load += Loaded;
-            window.Resize += Resized;
+            window.Load += Load;
+            window.Resize += Resize;
+            window.UpdateFrame += UpdateFrame;
             window.RenderFrame += RenderFrame;
-            window.Run(1.0 / 60.0);
+            window.Unload += Unload;
+            window.Run(60.0);
         }
 
-        void Loaded(object o, EventArgs e) {
+        void Load(object o, EventArgs e) {
             GL.ClearColor(0, 0, 0, 0);
+
+            shader = new Shader("shader.vert", "shader.frag");
+
+            mesh = new Mesh(new float[] {
+                0.5f,  0.5f, 0.0f,  // top right
+                0.5f, -0.5f, 0.0f,  // bottom right
+                -0.5f, -0.5f, 0.0f,  // bottom left
+                -0.5f,  0.5f, 0.0f  // top left
+            }, new uint[] {
+                0, 1, 3,
+                1, 2, 3
+            }, shader);
         }
 
-        void Resized(object o, EventArgs e) {
+        void Resize(object o, EventArgs e) {
             GL.Viewport(0, 0, window.Width, window.Height);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            GL.Ortho(0, 50, 0, 50, -1, 1);
-            GL.MatrixMode(MatrixMode.Modelview);
+        }
+
+        void UpdateFrame(object o, EventArgs e) {
+            KeyboardState input = Keyboard.GetState();
+
+            if (input.IsKeyDown(Key.Escape)) {
+                window.Exit();
+            }
         }
 
         void RenderFrame(object o, EventArgs e) {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-
-            GL.Begin(BeginMode.Triangles);
-            GL.Vertex2(1, 1);
-            GL.Vertex2(49, 1);
-            GL.Vertex2(25, 49);
-            GL.End();
-
+            mesh.Render();
             window.SwapBuffers();
+        }
+
+        void Unload(object o, EventArgs e) {
+            shader.Dispose();
+            mesh.Dispose();
         }
     }
 }
