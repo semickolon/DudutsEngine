@@ -12,9 +12,7 @@ namespace DudutsEngine {
         }
 
         GameWindow window;
-        Shader shader;
-        Material material;
-        Mesh mesh;
+        GameObject gameObject;
 
         public Game() {
             window = new GameWindow(1024, 600);
@@ -35,12 +33,10 @@ namespace DudutsEngine {
         void Load(object o, EventArgs e) {
             GL.ClearColor(0, 0, 0, 0);
 
-            shader = new Shader("shader.vert", "shader.frag");
-
-            Texture[] textures = { new Texture("texture.png") };
-            material = new Material(shader, textures);
-
-            mesh = new Mesh(new float[] {
+            var shader = new Shader("src/res/shader.vert", "src/res/shader.frag");
+            var textures = new Texture[] { new Texture("src/res/texture.png") };
+            var material = new Material(shader, textures);
+            var meshRenderer = new MeshRenderer(new float[] {
                 0.5f,  0.5f, 0.0f,  // top right
                 0.5f, -0.5f, 0.0f,  // bottom right
                 -0.5f, -0.5f, 0.0f,  // bottom left
@@ -54,6 +50,10 @@ namespace DudutsEngine {
                 0, 1,
                 0, 0
             }, material);
+            
+            gameObject = new GameObject();
+            gameObject.AddComponent(meshRenderer);
+            gameObject.AddComponent(new Rotator());
         }
 
         void Resize(object o, EventArgs e) {
@@ -66,17 +66,18 @@ namespace DudutsEngine {
             if (input.IsKeyDown(Key.Escape)) {
                 window.Exit();
             }
+
+            gameObject.Process(1f / 60f);
         }
 
         void RenderFrame(object o, EventArgs e) {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            mesh.Render();
+            gameObject.Render();
             window.SwapBuffers();
         }
 
         void Unload(object o, EventArgs e) {
-            shader.Dispose();
-            mesh.Dispose();
+            gameObject.Dispose();
         }
     }
 }

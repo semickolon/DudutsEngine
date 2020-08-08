@@ -1,17 +1,17 @@
 using System;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace DudutsEngine {
-    public class Mesh: IDisposable {
+    public class MeshRenderer : Component {
         public readonly int vao;
         public readonly int ebo;
         public readonly int vbo;
         public readonly int uvbo;
         public readonly int elementCount;
         public readonly Material material;
-        private bool disposed = false;
 
-        public Mesh(float[] vertices, uint[] indices, float[] uvs, Material material) {
+        public MeshRenderer(float[] vertices, uint[] indices, float[] uvs, Material material) {
             this.elementCount = indices.Length;
             this.material = material;
             
@@ -36,19 +36,12 @@ namespace DudutsEngine {
 
             GL.BindVertexArray(0);
         }
-
-        public void Dispose() {
-            if (!disposed) {
-                GL.DeleteBuffer(ebo);
-                GL.DeleteBuffer(vbo);
-                GL.DeleteBuffer(uvbo);
-                GL.DeleteVertexArray(vao);
-                disposed = true;
-            }
-        }
         
-        public void Render() {
+        public override void Render() {
             material.Use();
+            Matrix4 mat4 = transform.localMatrix;
+            material.shader.SetMatrix4("transform", ref mat4);
+
             GL.BindVertexArray(vao);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
@@ -56,6 +49,13 @@ namespace DudutsEngine {
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
             GL.BindVertexArray(0);
+        }
+
+        protected override void _Dispose() {
+            GL.DeleteBuffer(ebo);
+            GL.DeleteBuffer(vbo);
+            GL.DeleteBuffer(uvbo);
+            GL.DeleteVertexArray(vao);
         }
     }
 }

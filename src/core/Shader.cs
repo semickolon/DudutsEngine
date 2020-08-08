@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace DudutsEngine {
@@ -27,9 +28,11 @@ namespace DudutsEngine {
 
         private string ReadUTF8File(string path) {
             string contents = "";
+
             using (StreamReader reader = new StreamReader(path, Encoding.UTF8)) {
                 contents = reader.ReadToEnd();
             }
+
             return contents;
         }
 
@@ -65,6 +68,11 @@ namespace DudutsEngine {
         public void SetFloat(string name, float value) {
             int location = GL.GetUniformLocation(handle, name);
             GL.Uniform1(location, value);
+        }
+
+        public void SetMatrix4(string name, ref Matrix4 value) {
+            int location = GL.GetUniformLocation(handle, name);
+            GL.UniformMatrix4(location, true, ref value);
         }
 
         public void Dispose() {
