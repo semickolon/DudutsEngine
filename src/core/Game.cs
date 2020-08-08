@@ -12,7 +12,7 @@ namespace DudutsEngine {
         }
 
         GameWindow window;
-        GameObject gameObject;
+        GameObject root;
 
         public Game() {
             window = new GameWindow(1024, 600);
@@ -36,7 +36,7 @@ namespace DudutsEngine {
             var shader = new Shader("src/res/shader.vert", "src/res/shader.frag");
             var textures = new Texture[] { new Texture("src/res/texture.png") };
             var material = new Material(shader, textures);
-            var meshRenderer = new MeshRenderer(new float[] {
+            var mesh = new Mesh(new float[] {
                 0.5f,  0.5f, 0.0f,  // top right
                 0.5f, -0.5f, 0.0f,  // bottom right
                 -0.5f, -0.5f, 0.0f,  // bottom left
@@ -49,11 +49,20 @@ namespace DudutsEngine {
                 1, 1,
                 0, 1,
                 0, 0
-            }, material);
+            });
+
+            root = new GameObject();
             
-            gameObject = new GameObject();
-            gameObject.AddComponent(meshRenderer);
-            gameObject.AddComponent(new Rotator());
+            var mesh1 = new GameObject();
+            mesh1.AddComponent(new MeshRenderer(mesh, material));
+            mesh1.AddComponent(new Rotator());
+
+            var mesh2 = new GameObject();
+            mesh2.AddComponent(new MeshRenderer(mesh, material));
+            mesh2.AddComponent(new Wiggler());
+            
+            root.AddChild(mesh2);
+            root.AddChild(mesh1);
         }
 
         void Resize(object o, EventArgs e) {
@@ -67,17 +76,17 @@ namespace DudutsEngine {
                 window.Exit();
             }
 
-            gameObject.Process(1f / 60f);
+            root.Process(1f / 60f);
         }
 
         void RenderFrame(object o, EventArgs e) {
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            gameObject.Render();
+            root.Render();
             window.SwapBuffers();
         }
 
         void Unload(object o, EventArgs e) {
-            gameObject.Dispose();
+            root.Dispose();
         }
     }
 }

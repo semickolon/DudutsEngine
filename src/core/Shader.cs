@@ -72,7 +72,7 @@ namespace DudutsEngine {
 
         public void SetMatrix4(string name, ref Matrix4 value) {
             int location = GL.GetUniformLocation(handle, name);
-            GL.UniformMatrix4(location, true, ref value);
+            GL.UniformMatrix4(location, false, ref value);
         }
 
         public void Dispose() {
