@@ -45,24 +45,61 @@ namespace DudutsEngine {
 
         void Load(object o, EventArgs e) {
             GL.Enable(EnableCap.DepthTest);
-            GL.ClearColor(0, 0, 0, 0);
+            GL.Enable(EnableCap.CullFace);
+            GL.ClearColor(0.2f, 0.2f, 0.2f, 1f);
+            GL.CullFace(CullFaceMode.Back);
 
             var shader = new Shader("src/res/shader.vert", "src/res/shader.frag");
-            var textures = new Texture[] { new Texture("src/res/texture.png") };
+            var textures = new Texture[] { new Texture("src/res/hint_white.png") };
             var material = new Material(shader, textures);
-            var mesh = Mesh.FromOBJFile("src/res/suzanne.obj");
 
-            root = new GameObject();
+            root = new GameObject(true);
 
-            var cube = new GameObject();
-            cube.AddComponent(new MeshRenderer(mesh, material));
-            // cube.AddComponent(new Rotator());
+            var monkey = new GameObject();
+            monkey.AddComponent(new MeshRenderer(Mesh.FromOBJFile("src/res/suzanne.obj"), material));
+
+            var cube = Mesh.FromOBJFile("src/res/cube.obj");
+
+            var spinR = new GameObject();
+            var spinG = new GameObject();
+            var spinB = new GameObject();
+
+            spinG.transform.rotation.Y = 90;
+            spinB.transform.rotation.X = 90;
+
+            var lights = new GameObject();
+            var lightR = new PointLight(new Vector3(1, 0, 0));
+            var lightG = new PointLight(new Vector3(0, 1, 0));
+            var lightB = new PointLight(new Vector3(0, 0, 1));
+
+            lightR.transform.scale *= 0.05f;
+            lightG.transform.scale *= 0.05f;
+            lightB.transform.scale *= 0.05f;
+
+            lightR.AddComponent(new LightController() { moveSpeed = 1f });
+            lightG.AddComponent(new LightController() { moveSpeed = 1.5f });
+            lightB.AddComponent(new LightController() { moveSpeed = 2.5f });
+            lightR.AddComponent(new MeshRenderer(cube, material));
+            lightG.AddComponent(new MeshRenderer(cube, material));
+            lightB.AddComponent(new MeshRenderer(cube, material));
+
+            var plane = new GameObject();
+            plane.AddComponent(new MeshRenderer(Mesh.FromOBJFile("src/res/plane.obj"), material));
+            plane.transform.position.Y = -2f;
+            // plane.transform.rotation.Z = 30f;
 
             var camera = new Camera();
             camera.transform.position.Z += 2f;
             camera.AddComponent(new CameraController());
             
-            root.AddChild(cube);
+            spinR.AddChild(lightR);
+            spinG.AddChild(lightG);
+            spinB.AddChild(lightB);
+            root.AddChild(monkey);
+            root.AddChild(plane);
+            root.AddChild(spinR);
+            root.AddChild(spinG);
+            root.AddChild(spinB);
             root.AddChild(camera);
         }
 

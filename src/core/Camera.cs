@@ -29,11 +29,13 @@ namespace DudutsEngine {
         }
 
         protected override void EnterTree() {
+            base.EnterTree();
             if (_current == null)
                 MakeCurrent();
         }
 
         protected override void ExitTree() {
+            base.ExitTree();
             if (_current == this)
                 _current = null;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using OpenTK;
@@ -7,6 +8,7 @@ using OpenTK.Graphics.OpenGL;
 namespace DudutsEngine {
     public class Shader: IDisposable {
         private int handle;
+        private Dictionary<string, int> uniformLocations = new Dictionary<string, int>();
         private bool disposed = false;
 
         public Shader(string vertexPath, string fragmentPath) {
@@ -60,19 +62,34 @@ namespace DudutsEngine {
             SetFloat("TIME", Game.instance.GlobalTime);
         }
 
+        private int GetUniformLocation(string name) {
+            if (!uniformLocations.ContainsKey(name))
+                uniformLocations[name] = GL.GetUniformLocation(handle, name);
+            return uniformLocations[name];
+        }
+
         public void SetInt(string name, int value) {
-            int location = GL.GetUniformLocation(handle, name);
-            GL.Uniform1(location, value);
+            GL.Uniform1(GetUniformLocation(name), value);
         }
 
         public void SetFloat(string name, float value) {
-            int location = GL.GetUniformLocation(handle, name);
-            GL.Uniform1(location, value);
+            GL.Uniform1(GetUniformLocation(name), value);
+        }
+
+        public void SetVector2(string name, Vector2 value) {
+            GL.Uniform2(GetUniformLocation(name), value);
+        }
+
+        public void SetVector3(string name, Vector3 value) {
+            GL.Uniform3(GetUniformLocation(name), value);
+        }
+
+        public void SetVector4(string name, Vector4 value) {
+            GL.Uniform4(GetUniformLocation(name), value);
         }
 
         public void SetMatrix4(string name, ref Matrix4 value) {
-            int location = GL.GetUniformLocation(handle, name);
-            GL.UniformMatrix4(location, false, ref value);
+            GL.UniformMatrix4(GetUniformLocation(name), false, ref value);
         }
 
         public void Dispose() {

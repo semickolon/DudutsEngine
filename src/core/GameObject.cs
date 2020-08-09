@@ -8,12 +8,17 @@ namespace DudutsEngine {
         public readonly Transform transform = new Transform();
         public GameObject parent { get; protected set; }
         public bool activeInTree {
-            get => active && (parent?.active ?? true);
+            get => active && (parent?.activeInTree ?? root);
+        }
+        public bool isInTree {
+            get => parent?.isInTree ?? root;
         }
         public bool active = true;
+        private bool root = false;
         private bool disposed = false;
 
-        public GameObject() {
+        public GameObject(bool root = false) {
+            this.root = root;
             AddComponent(transform);
         }
 
@@ -26,7 +31,9 @@ namespace DudutsEngine {
             if (child.parent == null && child != this) {
                 children.Add(child);
                 child.parent = this;
-                child.EnterTree();
+
+                if (isInTree)
+                    child.EnterTree();
             }
         }
 
@@ -34,12 +41,19 @@ namespace DudutsEngine {
             if (children.Contains(child)) {
                 children.Remove(child);
                 child.parent = null;
-                child.ExitTree();
+
+                if (isInTree)
+                    child.ExitTree();
             }
         }
 
-        protected virtual void EnterTree() {}
-        protected virtual void ExitTree() {}
+        protected virtual void EnterTree() {
+            children.ForEach(c => c.EnterTree());
+        }
+
+        protected virtual void ExitTree() {
+            children.ForEach(c => c.ExitTree());
+        }
 
         public void Process(float delta) {
             if (activeInTree) {

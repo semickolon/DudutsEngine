@@ -16,6 +16,9 @@ namespace DudutsEngine {
             KeyboardState input = Keyboard.GetState();
             Vector3 moveDir = new Vector3(0);
 
+            if (input.IsKeyDown(Key.Space))
+                return;
+
             if (input.IsKeyDown(Key.W)) {
                 moveDir -= transform.forward;
             }
@@ -27,6 +30,12 @@ namespace DudutsEngine {
             }
             if (input.IsKeyDown(Key.A)) {
                 moveDir -= transform.right;
+            }
+            if (input.IsKeyDown(Key.Tab)) {
+                moveDir += transform.up;
+            }
+            if (input.IsKeyDown(Key.ShiftLeft)) {
+                moveDir -= transform.up;
             }
 
             this.transform.position += moveDir * moveSpeed * delta;
