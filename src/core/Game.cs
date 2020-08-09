@@ -83,6 +83,9 @@ namespace DudutsEngine {
             lightG.AddComponent(new MeshRenderer(cube, material));
             lightB.AddComponent(new MeshRenderer(cube, material));
 
+            var dirLight = new DirectionalLight(new Vector3(0.7f, 0.7f, 0.9f));
+            dirLight.AddComponent(new Rotator());
+
             var plane = new GameObject();
             plane.AddComponent(new MeshRenderer(Mesh.FromOBJFile("src/res/plane.obj"), material));
             plane.transform.position.Y = -2f;
@@ -97,9 +100,10 @@ namespace DudutsEngine {
             spinB.AddChild(lightB);
             root.AddChild(monkey);
             root.AddChild(plane);
-            root.AddChild(spinR);
-            root.AddChild(spinG);
-            root.AddChild(spinB);
+            // root.AddChild(spinR);
+            // root.AddChild(spinG);
+            // root.AddChild(spinB);saaaaaaaaaaaaaa
+            root.AddChild(dirLight);
             root.AddChild(camera);
         }
 

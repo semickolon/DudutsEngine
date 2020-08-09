@@ -27,10 +27,10 @@ namespace DudutsEngine {
             for (int i = 0; i < 4; i++) {
                 if (i < PointLight.allLights.Count) {
                     var light = PointLight.allLights[i];
-                    material.shader.SetVector3($"light{i}_Pos", light.transform.globalPosition);
+                    material.shader.SetVector4($"light{i}_Pos", light.uniformPosition);
                     material.shader.SetVector4($"light{i}_Color", light.uniformColor);
                 } else {
-                    material.shader.SetVector3($"light{i}_Pos", new Vector3(0));
+                    material.shader.SetVector4($"light{i}_Pos", new Vector4(0));
                     material.shader.SetVector4($"light{i}_Color", new Vector4(0));
                 }
             }
