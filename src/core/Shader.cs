@@ -57,7 +57,7 @@ namespace DudutsEngine {
 
         public void Use() {
             GL.UseProgram(handle);
-            SetFloat("TIME", Game.GlobalTime);
+            SetFloat("TIME", Game.instance.GlobalTime);
         }
 
         public void SetInt(string name, int value) {

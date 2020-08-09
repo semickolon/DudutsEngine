@@ -16,10 +16,8 @@ namespace DudutsEngine {
             material.Use();
 
             Matrix4 model = transform.globalMatrix;
-            Matrix4 view = Matrix4.CreateTranslation(0, 0, -3f);
-            Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView(
-                MathHelper.DegreesToRadians(60), 1024f / 600f, 0.01f, 100f
-            );
+            Matrix4 view = Camera.current.viewMatrix;
+            Matrix4 projection = Camera.current.projectionMatrix;
             material.shader.SetMatrix4("model", ref model);
             material.shader.SetMatrix4("view", ref view);
             material.shader.SetMatrix4("projection", ref projection);
