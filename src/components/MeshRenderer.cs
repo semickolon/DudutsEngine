@@ -25,9 +25,11 @@ namespace DudutsEngine {
             GL.BindVertexArray(mesh.vao);
             GL.EnableVertexAttribArray(0);
             GL.EnableVertexAttribArray(1);
+            GL.EnableVertexAttribArray(2);
             GL.DrawElements(PrimitiveType.Triangles, mesh.elementCount, DrawElementsType.UnsignedInt, 0);
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
             GL.BindVertexArray(0);
         }
 

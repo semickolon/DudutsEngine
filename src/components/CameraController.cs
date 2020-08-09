@@ -3,7 +3,7 @@ using OpenTK.Input;
 
 namespace DudutsEngine {
     public class CameraController : Component {
-        public float moveSpeed = 1f;
+        public float moveSpeed = 2f;
         public float sensitivity = 0.1f;
         public Vector2 lastMousePos = new Vector2(0);
 

@@ -50,45 +50,19 @@ namespace DudutsEngine {
             var shader = new Shader("src/res/shader.vert", "src/res/shader.frag");
             var textures = new Texture[] { new Texture("src/res/texture.png") };
             var material = new Material(shader, textures);
-            var mesh = new Mesh(new float[] {
-                0.5f,  0.5f, 0.0f,  // top right
-                0.5f, -0.5f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f,  // bottom left
-                -0.5f,  0.5f, 0.0f  // top left
-            }, new uint[] {
-                0, 1, 3,
-                1, 2, 3
-            }, new float[] {
-                1, 0,
-                1, 1,
-                0, 1,
-                0, 0
-            });
+            var mesh = Mesh.FromOBJFile("src/res/suzanne.obj");
 
             root = new GameObject();
 
-            var meshes = new GameObject(); 
-            
-            var mesh1 = new GameObject();
-            mesh1.AddComponent(new MeshRenderer(mesh, material));
-            mesh1.AddComponent(new Rotator());
-            
-            var mesh11 = new GameObject();
-            mesh11.AddComponent(new MeshRenderer(mesh, material));
-            mesh11.AddComponent(new Rotator());
-
-            var mesh2 = new GameObject();
-            mesh2.AddComponent(new MeshRenderer(mesh, material));
+            var cube = new GameObject();
+            cube.AddComponent(new MeshRenderer(mesh, material));
+            // cube.AddComponent(new Rotator());
 
             var camera = new Camera();
             camera.transform.position.Z += 2f;
-
             camera.AddComponent(new CameraController());
             
-            mesh1.AddChild(mesh11);
-            meshes.AddChild(mesh1);
-            meshes.AddChild(mesh2);
-            root.AddChild(meshes);
+            root.AddChild(cube);
             root.AddChild(camera);
         }
 
